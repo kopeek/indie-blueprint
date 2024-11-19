@@ -14,8 +14,9 @@ const bullets_collision_layer: int = 128
 
 
 #region General helpers
+@warning_ignore("narrowing_conversion")
 func collision_layer_to_value(layer: int) -> int:
-	layer = clamp(layer, 1, 32)
+	layer = clampi(layer, 1, 32)
 	
 	return pow(2, layer - 1)
 

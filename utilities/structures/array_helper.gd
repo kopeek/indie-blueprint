@@ -1,6 +1,24 @@
 class_name ArrayHelper
 
+
+static func sum(values: Array[int]) -> int:
+	var result: int = 0
+
+	for value in values:
+		result += value
+
+	return result
+
+
+static func sum_floats(values: Array[float]) -> float:
+	var result: float = 0.0
+
+	for value in values:
+		result += value
+
+	return result
 	
+
 ## Flatten any array with n dimensions recursively
 static func flatten(array: Array[Variant]):
 	var result := []
@@ -83,11 +101,24 @@ static func merge_unique(first: Array[Variant], second: Array[Variant]) -> Array
 			
 	return merged_array
 
-
-static func chunk(array: Array[Variant], size: int):
+##Separates an Array into smaller array:
+## argument 1: array that is going to be converted
+## argument 2: size of these smaller arrays
+## argument 3: writes smaller arrays even if they aren't full
+## Example:
+## ArrayHelper.chunk[[1,2,3,4,5,6,7,8,9], 3]
+## [1,2,3,4,5,6,7,8,9] -> [[1,2,3], [4,5,6], [7,8,9]]
+## Example 2:
+## ArrayHelper.chunk([1,2,3,4,5,6,7,8,9], 4)
+## [1,2,3,4,5,6,7,8,9] -> [[1, 2, 3, 4], [5, 6, 7, 8], [9]]
+static func chunk(array: Array[Variant], size: int, only_chunks_with_same_size: bool = false):
 	var result = []
 	var i = 0
 	var j = -1
+	
+	if only_chunks_with_same_size:
+		@warning_ignore("integer_division")
+		array = array.slice(0, floor(array.size() / size) * size)
 	
 	for element in array:
 		if i % size == 0:
