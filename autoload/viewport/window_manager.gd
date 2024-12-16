@@ -1,5 +1,19 @@
 extends Node
 
+## Configuration for retro psx games
+# Viewport Size: 320x180 o 640x360 depending on the textures details you want
+# Aspect: Keep
+# Mode: Viewport
+# Textures: Nearest
+
+## Configuration for pixel art games that allows smooth camera movement
+## Original source https://www.reddit.com/r/godot/comments/1hab9tb/how_i_setup_my_pixel_art_game_in_godot_4/
+# Viewport Size: 1920x1080 depending on the details you want
+# Aspect: Keep
+# Scale: 3, Scale mode: Integer
+# Mode: Canvas items
+# Textures: Nearest (Don't activate the Snaps 2D options for textures\)
+
 const Resolution_Mobile: String = "mobile"
 const Resolution4_3: String = "4:3"
 const Resolution16_9: String = "16:9"
@@ -163,7 +177,9 @@ func screenshot_to_folder(folder: String = "%s/screenshots" % [OS.get_user_data_
 	if create_dir_error != OK:
 		push_error("WindowManager::screenshot_to_folder: Can't create directory '%s'. Error: %s" % [folder, error_string(create_dir_error)])
 		return create_dir_error
-		
+	
+	await RenderingServer.frame_post_draw
+	
 	var screenshot_image: Image = screenshot(viewport)
 	var screenshot_save_error = screenshot_image.save_png("%s/%s.png" % [folder, Time.get_datetime_string_from_system().replace(":", "_")])
 	
@@ -174,12 +190,13 @@ func screenshot_to_folder(folder: String = "%s/screenshots" % [OS.get_user_data_
 
 ## Recommended to call this method after await RenderingServer.frame_post_draw
 func screenshot_to_texture_rect(viewport: Viewport = get_viewport(), texture_rect: TextureRect = TextureRect.new()) -> TextureRect:
-	var screenshot_image = screenshot(viewport)
+	await RenderingServer.frame_post_draw
 	
-	#img.flip_y()
+	var screenshot_image = screenshot(viewport)
 	texture_rect.texture = ImageTexture.create_from_image(screenshot_image)
 	
 	return texture_rect
+
 #endregion
 
 #region Parallax helpers
