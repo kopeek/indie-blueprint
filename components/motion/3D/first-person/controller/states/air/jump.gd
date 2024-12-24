@@ -85,17 +85,20 @@ func physics_update(delta: float):
 		
 	if actor.is_grounded:
 		if actor.motion_input.input_direction.is_zero_approx():
-			FSM.change_state_to("Idle")
+			FSM.change_state_to(Idle)
 		else:
-			FSM.change_state_to("Walk")
+			FSM.change_state_to(Walk)
 			
-	
 	detect_fall_after_jump_fall_time_passed()
+	detect_wall_jump()
+	detect_wall_run()
 	
 	actor.move_and_slide()
 
 
 func apply_jump() -> void:
+	wall_run_start_cooldown_timer.start()
+	
 	last_jumped_position = actor.position
 	jump_count += 1
 	
@@ -138,7 +141,7 @@ func detect_fall_after_jump_fall_time_passed() -> void:
 	or  up_direction_opposite.is_equal_approx(Vector3.UP) and actor.position.y > last_jumped_position.y \
 	or up_direction_opposite.is_equal_approx(Vector3.RIGHT) and actor.position.x > last_jumped_position.x \
 	or up_direction_opposite.is_equal_approx(Vector3.LEFT) and actor.position.x < last_jumped_position.x:
-		FSM.change_state_to("Fall")
+		FSM.change_state_to(Fall)
 	
 	
 	
